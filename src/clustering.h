@@ -9,5 +9,6 @@ typedef struct {
 	unsigned int nbColumn;
 }cluster ;
 cluster parsing(const std::string &str);
+void transform_cluster(const std::string &str1 ,const std::string &str2);
 
 #endif

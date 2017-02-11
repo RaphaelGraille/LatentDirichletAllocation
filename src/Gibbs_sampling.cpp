@@ -10,6 +10,8 @@
 
 Gibbs_sampling::Gibbs_sampling(Corpus &c,unsigned int k) {
 	std::srand(std::time(NULL));
+
+	/* Allocation des attributs de la classe Gibbs_sampling*/
 	freq=new unsigned int*[c.getVocabularySize()];
 	for (unsigned int i=0;i<c.getVocabularySize();i++){
 		freq[i]= new unsigned int[k];
@@ -25,6 +27,8 @@ Gibbs_sampling::Gibbs_sampling(Corpus &c,unsigned int k) {
 	for (unsigned int i=0;i<c.getDocCount();i++){
 		top[i]= new unsigned int[k];
 	}
+
+	/* Initialisation des attributs*/
 	sumtop=new unsigned int[c.getDocCount()];
 	double alpha=50/k;
 	double beta = 0.1;
@@ -57,7 +61,6 @@ Gibbs_sampling::Gibbs_sampling(Corpus &c,unsigned int k) {
 	for (unsigned int d=0;d<c.getDocCount();d++){
 		for(unsigned int w=0; w<c.getDocument(d).getWords().size(); w++){
 			unsigned int topic = (unsigned int)((double)(std::rand())/(double)(RAND_MAX)*(double)K);
-			std::cout<<"topic : "<<topic<<std::endl;
 			this->z[d][w] = topic;
 			this->top[d][topic] += 1;
 			this->freq[c.getDocument(d).getWord(w).getWordIndex()][topic] += 1;
@@ -95,9 +98,6 @@ void Gibbs_sampling::sampling(Corpus &c) {
 
 	/* Pour chaque doc.*/
 	for (unsigned int d=0;d<c.getDocCount();d++){
-		//std::cout<<"Document "<<d<<"\n";
-		/* le tableau z[i] contient le topic courant associé au ième mot du document d*/
-
 		for (unsigned int i=0;i<c.getDocument(d).getWords().size();i++){
 			for(unsigned int rr = 0; rr<c.getDocument(d).getWord(i).getFreq(); rr++){
 				unsigned int w = c.getDocument(d).getWord(i).getWordIndex();
@@ -111,6 +111,7 @@ void Gibbs_sampling::sampling(Corpus &c) {
 				for (unsigned int k=1; k<nbClasses; k++){					
 					proba[k] = proba[k-1]+((top[d][k] +alpha)/(sumtop[d]+nbClasses*alpha))*(freq[w][k] +beta)/(freq_total[k]+beta*c.getVocabularySize());					
 				}
+				/*sample */
 				double r = ((double)std::rand()/RAND_MAX)*proba[nbClasses-1];
 				unsigned int j;
 				for (j=0; j<nbClasses; j++){
@@ -128,7 +129,7 @@ void Gibbs_sampling::sampling(Corpus &c) {
 	} 
 }
 
-/* correspond à phi dans le document 2011-darling ... */
+/* calcule beta*/
 void Gibbs_sampling::computeBeta(Corpus &c){
 	for(unsigned int i=0;i<K;i++){
 		for(unsigned int n=0;n<c.getVocabularySize();n++){
@@ -137,7 +138,7 @@ void Gibbs_sampling::computeBeta(Corpus &c){
 	}
 
 }
-
+/*calcul Theta*/
 void Gibbs_sampling::computeTheta(Corpus &c){
 	for(unsigned int d=0;d<c.getDocCount();d++){	
 		for(unsigned int i=0;i<K;i++){
@@ -146,17 +147,7 @@ void Gibbs_sampling::computeTheta(Corpus &c){
 	}
 }		
 
-/*
-void Gibbs_sampling::loadZ(Corpus &c){
-	for(unsigned int d=0; d<c.getDocCount(); d++){
-		for(unsigned int w =0; w<c.getDocument(d).getWords().size(); w++){
-			for(unsigned int i=0; i<K; i++){
-				c.getDocument(d).getPhi(w,i) = 
-			}
-		}
-	}
-}
-*/
+/* itérations du Gibbs sampling*/
 void Gibbs_sampling::iter_sampling(Corpus &c,unsigned int nbIter){
 	for (unsigned int i=0;i<nbIter;i++){
 		std::cout<<"Iteration "<< i+1 <<" sur "<< nbIter <<"\n";

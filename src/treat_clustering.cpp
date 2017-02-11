@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cassert>
 
+/* Récupère le clustering expert*/
 std::vector<unsigned int> parsing_classes(const std::string &str) {
     const char* filename = str.c_str();
     std::ifstream file(filename);
@@ -24,7 +25,7 @@ std::vector<unsigned int> parsing_classes(const std::string &str) {
     return res;
 }
 
-
+/* Associe une classe à chaque document à partir du fichier de sortie intermédiaire de clustering*/
 std::vector<unsigned int> treat_clustering(const std::string &str) {
     const char* filename = str.c_str();
     std::ifstream file(filename);
@@ -49,7 +50,7 @@ std::vector<unsigned int> treat_clustering(const std::string &str) {
 }
 
 
-
+/* Renvoie le fichier des résultat du clustering expert*/
 void results(const std::string &cluster, const std::string &corpus, char* file_name) {
 	std::vector<unsigned int> expert_classes = parsing_classes(corpus);
 	std::vector<unsigned int>predicted_classes = treat_clustering(cluster);
@@ -80,7 +81,7 @@ void results(const std::string &cluster, const std::string &corpus, char* file_n
 	for(unsigned int j =0; j<expert_classes.size(); j++) {
 		outfile<<"Document "<< j+1 <<":" <<std::endl<<std::endl;
 		outfile<<"Clustering expert : "<<expert_classes[j]<<std::endl;
-		outfile<<"Clustering maison : "<<predicted_classes[j]<<std::endl<<std::endl<<std::endl;
+		outfile<<"Clustering produit : "<<predicted_classes[j]<<std::endl<<std::endl<<std::endl;
 	}
 	
 	outfile<<"Taux de bonne prediction pour la classe : \n";
@@ -95,22 +96,10 @@ void results(const std::string &cluster, const std::string &corpus, char* file_n
 
 
 int main(int argc, char* argv[]) {
-
+	if(argc != 4){
+		cout<<"erreur : nombre d'arguments inexact.\n Rappel de la commande : ./treat_clustering <corpus utilisé> <cluster produit> <nom du fichier de résultats>"<<endl;
+		return 0;
+	}
   results(argv[2], argv[1], argv[3]);
-  //std::vector<unsigned int> vect = parsing_classes("TF-20NG-Indexation");
-  //Verif :
-    /*std::fstream outfile_0("Verif_Theo", std::ios::out);
-    for(unsigned int k=0; k<19997; k++) {
-        outfile_0<<"classe doc "<<k+1<<" : "<<vect[k]<<"\n";
-    }
-    outfile_0.close();
-
-
-    std::vector<unsigned int> res = treat_clustering("Clustering_fullCorp_nd5_nm10");
-    //Verif :
-    std::fstream outfile("Verif_Brams", std::ios::out);
-    for(unsigned int k=0; k<19997; k++) {
-        outfile<<"indice du max, ligne "<<k+1<<" : "<<res[k]<<"\n";
-    }
-    outfile.close();*/    
+ 
 }

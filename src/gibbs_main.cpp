@@ -50,7 +50,7 @@ void write_z_clustering(Corpus c, Gibbs_sampling model, const std::string &str) 
 			cluster[m][model.getZ(m,n)] += 1;
         }
 		for(unsigned int i=0; i<K; i++){
-			outfile<<cluster[m][i]<<" ";
+			outfile<< i+1<<":"<<cluster[m][i]<<" ";
 		}
 		outfile<<std::endl;
 	}
@@ -58,21 +58,25 @@ void write_z_clustering(Corpus c, Gibbs_sampling model, const std::string &str) 
 
 int main(int argc, char* argv[]) {
 
-	unsigned int nbIter=1000;
+	if(argc !=5){
+		std::cout<<"erreur : nombre d'arguments inexact. \n Rappel de la commande : ./gibbs <corpus utilisé> <nom du fichier d'écriture des beta> <nom du fichier d'écriture des theta> <nom du fichier d'écriture du clustering>"<<std::endl;
+		return 0;
+	}
+	unsigned int nbIter=2000;
 	std::cout<<"Début du programme\n";
-	unsigned int K = 40;
+	unsigned int K = 20;
 	std::cout<<"Initialisation du corpus\n";
 	Corpus c(argv[1], "beta0", K);
 	std::cout<<"Construction du model\n";
 	Gibbs_sampling model(c,K);
 	std::cout<<"Début du sampling ...\n";
 	model.iter_sampling(c,nbIter);
-	std::cout<<"Samnplig terminé.\n";
+	std::cout<<"Sampling terminé.\n";
 	std::cout<<"Calcul de beta\n";
 	model.computeBeta(c);
 	std::cout<<"Calcul de theta\n";
 	model.computeTheta(c);
-	std::cout<<"Eciture de beta\n";
+	std::cout<<"Ecriture de beta\n";
 	write_beta(c,model,argv[2]);
 	std::cout<<"Ecriture de theta\n";
 	write_theta(c, model, argv[3]);

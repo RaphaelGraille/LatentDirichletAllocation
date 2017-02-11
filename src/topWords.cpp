@@ -5,11 +5,11 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-
+/* permet d'extraire à partir d'un beta les 10 mots les plus représentés dans un cluster*/
 int main(int argc, char* argv[]){
-	unsigned int nbClasses =20;
+	//unsigned int nbClasses =20;
 	unsigned int nbTopWords =10;
-	unsigned int vocSize = 59809;
+	//unsigned int vocSize = 59809;
 	unsigned int numClass =1;
 	unsigned int max_index;
 	std::vector<double> beta_i;
@@ -19,9 +19,14 @@ int main(int argc, char* argv[]){
 	std::vector<double>::iterator max;
 	std::ifstream beta(argv[2]);
 	std::ifstream voc(argv[1]);
-    std::string line;
+	std::string line;
 	std::fstream outfile(argv[3], std::ios::in|std::ios::out|std::ios::trunc);
-
+	
+	if(argc!=4){
+		std::cout<< "erreur : nombre d'argument inexact \n rappel de la commande : ./top_words <Vocabulaire utilisé> <beta utilisé> <nom du fichier de sortie>" << std::endl;
+		return 0;
+	}
+	
 	while(getline(voc, line)){
 		std::istringstream iss(line);
 		iss>>curWord;
@@ -40,7 +45,6 @@ int main(int argc, char* argv[]){
 		for(unsigned int i=0; i<nbTopWords;i++){
 			max = std::max_element(beta_i.begin(),beta_i.end());
 			max_index = std::distance(beta_i.begin(), max);
-			//std::cout<< max_index<<std::endl;
 			outfile<< tmpvocabulary[max_index]<<std::endl;
 			beta_i.erase(beta_i.begin()+max_index);
 			tmpvocabulary.erase(tmpvocabulary.begin()+max_index);

@@ -22,7 +22,7 @@ class Gibbs_sampling{
 	unsigned int** freq;
 	/* freq_total[i] représente le nombre de mots associés à la classe i*/
 	unsigned int* freq_total;
-
+	/* z représente la classe associé à chaque mot de chaque document*/
 	unsigned int** z;
 
 	/* top[d][i] représente le nombre de mots dans le doc d assigné au ième topic*/

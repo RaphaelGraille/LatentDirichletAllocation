@@ -28,9 +28,13 @@ int main(int argc, char* argv[]){
 	std::cout<<"Parsing du corpus" << argv[1] <<"\n";
 	Corpus fullCorp(argv[1], "beta0", k);
 	std::cout<<"Creation du sous-corpus\n";
+	// Creation du "sous corpus" sur lequel sera initialisé beta.
 	Corpus lightCorp(fullCorp, k, nbDoc);
+	// Initialisation de beta sur le "sous corpus"
+	lightCorp.NGInitBeta(k, nbDoc);
 	std::cout<<"Beta initialisé avec succès\nEcriture dans fichier de sortie.\n";
 	std::fstream outfile(argv[2], std::ios::in|std::ios::out|std::ios::trunc);
+	// Ecriture des resultats dans la fichier de sortie
 	for(unsigned int i=0; i<k; i++){
 		for(unsigned int n=0; n<fullCorp.getVocabularySize();n++){
 			outfile<<lightCorp.getBeta(i,n)<<" " ;

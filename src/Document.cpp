@@ -27,33 +27,24 @@ Document::Document(std::string line, unsigned int k) {
     std::istringstream iss(line);
     iss >> v;
     unsigned int N=0;
-	double totalLength =0.0;
+    double totalLength =0.0;
     unsigned int wordIndex;
     double frequency;
     while (iss >> wordIndex && iss >> frequency) {
-        Word w(wordIndex-1,(unsigned int)(frequency));
-        words.push_back(w);
-        //freqs[i].push_back(frequency);
-        N++;
-		totalLength += frequency;
+	    Word w(wordIndex-1,(unsigned int)(frequency));
+	    words.push_back(w);
+	    N++;
+	    totalLength += frequency;
     }
-	this->setTotalLength(totalLength);
+    this->setTotalLength(totalLength);
     for (unsigned int i=0; i<k; i++) {
-    gamma.push_back(0.0);
+	    gamma.push_back(0.0);
     }
     std::vector<double> vect(k,0.0);
     for (unsigned int n=0; n<N; n++) {
-        phi.push_back(vect);
+	    phi.push_back(vect);
     }
 }
-
-
-/*Document::Document(Document& doc){
-	this->words = doc.getWords();
-	this->gamma = doc.getGamma();
-	this->phi = doc.getPhi();
-	this->totalLength = doc.getTotalLength();
-}*/
 
 Document::~Document() {
 }

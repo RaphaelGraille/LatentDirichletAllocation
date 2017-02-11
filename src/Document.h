@@ -11,9 +11,9 @@ class Document {
         Document();
         Document(unsigned int wordCount);
         Document(std::string line, unsigned int k);
-		//Document(Document& doc);
-		~Document();
-
+	//Document(Document& doc);
+	~Document();
+	
         /* mise a jour d'un mot du document */
         void setWord(unsigned int i, unsigned int j);
         
@@ -41,22 +41,22 @@ class Document {
         void setPhi(unsigned int n, unsigned int i, double d);
 
         void setGamma(unsigned int i, double d);
-
-		unsigned int getTotalLength() const;
-
-		void setTotalLength(unsigned int l);
+	
+	unsigned int getTotalLength() const;
+	
+	void setTotalLength(unsigned int l);
 		
-        /* affichage sous forme vectorielle du document */
-        void display(std::ostream &str) const;
-    private :
-        /* vector contenant tous les mots du document */
-        std::vector<Word> words;
-        /* tableau gam */
-        std::vector<double> gamma;
-        /* tableau phi */
-        std::vector<std::vector<double>> phi;
-		/* nomre de mots dans le document*/
-		double totalLength;
+	/* affichage sous forme vectorielle du document */
+	void display(std::ostream &str) const;
+ private :
+	/* vector contenant tous les mots du document */
+	std::vector<Word> words;
+	/* tableau gam */
+	std::vector<double> gamma;
+	/* tableau phi */
+	std::vector<std::vector<double>> phi;
+	/* nomre de mots dans le document*/
+	double totalLength;
 };
 
 #endif

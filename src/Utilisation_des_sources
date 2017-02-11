@@ -1,0 +1,65 @@
+Sommaire :
+	
+	I) Compilation.
+	II) Utilisation des programmes.
+	III) Chaine d'execution des différents programmes.
+
+
+	I) Compilation.
+
+Pour compiler le projet en entier entre dans le terminal :
+	make
+
+Pour compiler les différents programmes un par un, se référer au Makefile.
+
+
+	II) Utilisation des différents programmes.
+
+- Pour générer un beta sur le corpus :
+		./beta <nom du corpus> <nom du fichier de sortie pour le beta>
+
+
+- Pour faire EM variationnel sur un corpus :
+        ./varEM <Corpus utilisé> <beta initial utilisé> <nom de fichier de sortie de beta estimé> <nom de fichier de sortie des phi estimé>
+
+- A appliquer suite à l'execution de l'EM variationnel pour obtenir un fichier exploitable par CEM:
+  	    ./clustering <fichier résultat à parser> <nom fichier résultat intermédiaire> <nom du fichier de sortie utilisé en entrée de l'algo CEM>
+
+
+- Pour faire Gibbs sampling sur un corpus :
+     	./gibbs <corpus utilisé> <nom du fichier d'écriture des beta> <nom du fichier d'écriture des theta> <nom du fichier d'écriture du clustering>
+
+- Pour passer l'algorithme CEM sur un corpus représenté en indice-valeur.
+		./CEM <corpus utilisé> <nombre de document> <taille du vocabulaire> <nombre de classe> <fichier de sortie contenant le clustering>
+
+- Pour Obtenir un fichier de résultat avec les F-mesure de chaque cluster.
+		./treat_un_cluster <corpus utilisé> <fichier d'entrée> <fichier de sortie>
+
+- A appliquer pour du clustering SUPERVISE seulement. Même utilisation que treat_un_cluster 
+les fichiers de sortie résultat intermédiaire de clustering ou sur le fichier de sortie de gibbs_main pour obtenir les F-mesures
+  	    ./treat_clustering <corpus utilisé> <cluster produit> <nom du fichier de résultats>
+
+
+- A appliquer pour avoir les TopWords :
+  	    ./top_words <Vocabulaire utilisé> <beta utilisé> <nom du fichier de sortie>
+
+
+	III) Chaine d'execution des différents programmes.
+
+- Pour obtenir un clustering non supervisé avec EM variationnel :
+	make
+	./beta TF-20NG-Indexation beta_EM
+	./varEM TF-20NG-Indexation beta_EM beta_estime phi_estime
+	./clustering phis_estime repartition_doc docs_espace_topics
+	./CEM docs_espace_topics 19997 59809 20 clustering_CEM
+	./treat_un_cluster TF-20NG-Indexation clustering_CEM resultat_du_clustering
+	pour générer le top words :
+	./top_words Vocabulaire beta_estime top_Words
+
+- Pour obtenir un clustering non supervisé avec Gibbs Sampling :
+	make
+	./gibbs TF-20NG-Indexation beta_estime theta_estime docs_espace_topics
+	./CEM docs_espace_topics 19997 59809 20 clustering_CEM
+	./treat_un_cluster TF-20NG-Indexation clustering_CEM resultat_du_clustering
+	pour générer le top words :
+	./top_words Vocabulaire beta_estime top_Words

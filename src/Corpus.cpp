@@ -60,6 +60,7 @@ Corpus::Corpus(const std::string &str, const std::string &str2, unsigned int k) 
     //randomInitBeta(k);
 }
 
+/* Construceur utilisé dans CEM*/
 Corpus::Corpus(const std::string &str,unsigned int vocSize) {
     const char* filename = str.c_str();
     std::ifstream file(filename);
@@ -80,21 +81,20 @@ Corpus::Corpus(const std::string &str,unsigned int vocSize) {
 	beta=NULL;
 }
 
-/* Constructeur d'un sous corpus de taille k*nbDoc*/
+/* Constructeur d'un sous corpus du corpus c de taille k*nbDoc contenant nbDoc document par classe*/
 Corpus::Corpus(Corpus &c, unsigned int k, unsigned int nbDoc){
 	std::srand(std::time(NULL));
-	this->vocabularySize = c.vocabularySize;
+	this->vocabularySize = c.getVocabularySize();
 	this->docCount = k*nbDoc;
 	this->alpha = c.alpha;
 	this->docs.reserve(k*nbDoc);
 	/* Selection aléatoire de nbDoc doc. par classe*/
 	for(unsigned int i=0; i<k; i++){
-		//std::cout<<"creation du sous-corpus pour la classe " <<i<<" \n"; 
 		for(unsigned int j=0; j<nbDoc; j++){
-			unsigned int d=(std::rand()%600)+200+i*1000;
-			while(c.getDocument(d).getWords().size()==0){d=(std::rand()%600)+200+i*1000;} //Permet d'éliminer les documents vides
-			//unsigned int d=(std::rand()%10)+i*10;
-			//while(c.getDocument(d).getWords().size()==0){d=(std::rand()%10)+i*10;} //Permet d'éliminer les documents vides
+			// On choisit un document au hasard dans le corpus
+			unsigned int d=(std::rand()%c.getDocCount());
+			std::cout<<d<<std::endl;
+			while(c.getDocument(d).getWords().size()==0){d=(std::rand()%c.getDocCount());} //Permet d'éliminer les documents vides
 			Document doc = Document();
 			std::cout<<"Document selectionnée : "<< d <<"\n";
 			doc = c.getDocument(d);
@@ -145,6 +145,7 @@ unsigned int Corpus::getVocabularySize(){
 	return vocabularySize;
 }
 
+// Initialise beta de manière aleatoire.
 void Corpus::randomInitBeta(unsigned int k){
 	std::srand(std::time(NULL));
 	
@@ -155,6 +156,7 @@ void Corpus::randomInitBeta(unsigned int k){
 	}
 }
 
+// Initialise beta sur nbDoc pour chaque classe.
 void Corpus::NGInitBeta(unsigned int k,unsigned int nbDoc){
 	std::cout<<"Début de l'initialisation de beta :\n";
 	std::cout<<"Nombre de docs : "<< docCount <<" "<< nbDoc*k << " "<< docs.size() <<"\n";
@@ -170,7 +172,6 @@ void Corpus::NGInitBeta(unsigned int k,unsigned int nbDoc){
 
 			Document& doc = this->getDocument(i*nbDoc+j);
 			for(unsigned int n=0; n<doc.getWords().size(); n++){
-				//mot = std::rand()%doc.getWords().size();
 				mot = n;
 				std::cout<<"Mot : " << doc.getWord(mot).getWordIndex() << "\n";
 				getBeta(i,doc.getWord(mot).getWordIndex()) += doc.getWord(mot).getFreq();
@@ -179,25 +180,8 @@ void Corpus::NGInitBeta(unsigned int k,unsigned int nbDoc){
 		}
 		for(unsigned int n=0; n<vocabularySize;n++){
 			getBeta(i,n) = (getBeta(i,n) + 1.0) /(sumBeta[i] + vocabularySize);
-			//sumBeta[i] += 1.0;
 		}
 
-	}
-}
-
-void Corpus::NGLightInitBeta(unsigned int k){
-	std::srand(std::time(NULL));
-	allocateBeta(k);
-	for(unsigned int i=0; i<k; i++){
-		unsigned int d=std::rand()%10+i*10;
-		std::cout<<"Init de beta par doc : "<< d << "\n";
-		Document& doc = this->getDocument(d);
-		for(unsigned int n=0; n<doc.getWords().size(); n++){
-			getBeta(i,doc.getWord(n).getWordIndex()) += doc.getWord(n).getFreq();
-		}
-		for(unsigned int n=0; n<vocabularySize;n++){
-			setBeta(i,n,getBeta(i,n)+1.0);
-		}
 	}
 }
 

@@ -58,13 +58,15 @@ int main(int argc, char *argv[])
 	double Lnew; 
 	double Lold;
 	unsigned int* D;
-	int MaxEpoque=1000, Epoque=1, IndCls;
+	int MaxEpoque=1, Epoque=1, IndCls;
 	unsigned long U, i, j, k, n, P, C;
 	std::fstream outfile(argv[5], std::ios::in|std::ios::out|std::ios::trunc);
 
 	std::srand(std::time(NULL));
-	if(argc!=6)
+	if(argc!=6){
 		std::cout<<"Usage : ./CEM-NB-UnSL <FicName> <Card> <Attributs> <NumOfClusters> <Outfile>"<<std::endl;
+		return 0;
+	}
 	/*
 	sscanf(argv[2],"%ld",&n);
 	sscanf(argv[3],"%ld",&P);
@@ -146,11 +148,10 @@ int main(int argc, char *argv[])
 			std::cout<<Pjk[j][k]<<std::endl;
 		}
 	}
-	std::cout<<"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
 
 	Lnew=1.0;
 	Lold=0.0;
-	MaxEpoque=1000;
+	MaxEpoque=3;
 	Epoque=1;
 	while((fabs(Lnew-Lold)>=0.001) && (Epoque<=MaxEpoque))
 	{
